@@ -2,8 +2,8 @@ package config
 
 import "os"
 
-var URIMONGODBWSNAIL = "mongodb+srv://nidasakinaaulia:Nida150304@internship1.9oeyawk.mongodb.net/"
-var DBNAME = "Intership1"
+var URIMONGODBWSMAIL = os.Getenv("MONGOINTERN")
+var DBNAME = "Internship1"
 var PublicKey = os.Getenv("PUBLICKEY")
 var PrivateKey = os.Getenv("PRIVATEKEY")
 var XappKey = os.Getenv("XAPPKEY")

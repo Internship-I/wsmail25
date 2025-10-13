@@ -2,7 +2,7 @@ package routes
 
 import (
 	transRepo "wsmail25/repository/trx"
-	usersRepo "wsmail25/repository/user"
+	usersRepo "wsmail25/repository/users"
 
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -10,7 +10,7 @@ import (
 
 func Init(db *mongo.Client) {
 	TransactionRepository = transRepo.NewTransaksiTable(db)
-	UsersRepository = usersRepo.NewUsersTable(db)
+	UsersRepository = usersRepo.NewPenggunaTable(db)
 }
 
 func Router(app *fiber.App) (err error) {

@@ -35,7 +35,7 @@ func main() {
 	app.Use(etag.New())
 	app.Use(logger.New(logger.Config{Format: "${status} - ${method} ${path}\n"}))
 
-	mongoConn, _, err := database.NewMongoDBConnection(config.URIMONGODBWSNAIL, config.DBNAME)
+	mongoConn, _, err := database.NewMongoDBConnection(config.URIMONGODBWSMAIL, config.DBNAME)
 	if err != nil {
 		log.Fatalf("Failed to connect to MongoDB: %v", err)
 	} else {

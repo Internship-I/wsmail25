@@ -7,7 +7,7 @@ import (
 )
 
 func (u *UserHandler) InsertUser(ctx *fiber.Ctx) (err error) {
-	var users model.User
+	var users model.Users
 	if err := ctx.BodyParser(&users); err != nil {
 		return err
 	}
@@ -20,7 +20,7 @@ func (u *UserHandler) InsertUser(ctx *fiber.Ctx) (err error) {
 }
 
 func (u *UserHandler) GetAllUsers(ctx *fiber.Ctx) (err error) {
-	var users model.User
+	var users model.Users
 	users, err = u.user.GetAllUsers()
 	if err != nil {
 		return err

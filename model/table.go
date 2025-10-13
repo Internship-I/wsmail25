@@ -62,7 +62,7 @@ type WALog struct {
 }
 
 // User represents a courier or admin
-type User struct {
+type Users struct {
 	ID          primitive.ObjectID `bson:"_id,omitempty" json:"_id,omitempty"`
 	FullName    string             `bson:"name,omitempty" json:"name,omitempty"`
 	PhoneNumber string             `bson:"phone,omitempty" json:"phone,omitempty"`
