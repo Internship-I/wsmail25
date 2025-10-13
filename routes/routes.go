@@ -28,7 +28,7 @@ func UserRoutes(grp fiber.Router) (err error) {
 	groupes.Post("/insertUs", users.InsertUser)
 	groupes.Get("/User", users.GetAllUsers)
 	groupes.Post("/insertTrans", trans.InsertTransaction)
-	groupes.Get("/Transaction", trans.GetAllTransaction)
+	groupes.Get("/transaction", trans.GetAllTransaction)
 
 	return
 }
