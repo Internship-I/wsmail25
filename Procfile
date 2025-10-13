@@ -1,1 +1,1 @@
-web: wsmailbe
+web: wsmail25

@@ -10,7 +10,9 @@ var origins = []string{
 	"http://localhost:3000",
 	"http://localhost:5000",
 	"http://localhost:1300",
+	
 }
+
 var headers = []string{
 	"Origin",
 	"Content-Type",
