@@ -7,10 +7,12 @@ type UserController interface {
 	GetAllUsers(c *fiber.Ctx) error
 	GetAllTransaction(ctx *fiber.Ctx) (err error)
 	InsertTransaction(c *fiber.Ctx) error
+	GetByConnote(c *fiber.Ctx) error
 }
 
 type TransactionController interface {
 	// InsertTransaction(ctx *fiber.Ctx) (err error)
 	GetAllTransaction(ctx *fiber.Ctx) (err error)
 	InsertTransaction(c *fiber.Ctx) error
+	GetByConnote(c *fiber.Ctx) error
 }

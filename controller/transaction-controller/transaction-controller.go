@@ -33,6 +33,15 @@ func (t *TransactionHandler) GetAllTransaction(ctx *fiber.Ctx) (err error) {
 	})
 }
 
+func (h *TransactionHandler) GetByConnote(c *fiber.Ctx) error {
+    connote := c.Params("connote")
+    trx, err := h.transaction.GetByConnote(c.Context(), connote)
+    if err != nil {
+        return c.Status(404).JSON(fiber.Map{"status":"error","message":err.Error()})
+    }
+    return c.JSON(fiber.Map{"status":"success","data":trx})
+}
+
 func (r *TransactionHandler) InsertTransaction(c *fiber.Ctx) error {
 	var trans model.Transaction
 

@@ -37,11 +37,40 @@ func (r *MTrans) GetAllTransaction(ctx context.Context) ([]model.Transaction, er
 	return trans, nil
 }
 
+//GetByConnote
+func (r *MTrans) GetByConnote(ctx context.Context, connote string) (model.Transaction, error) {
+	var tr model.Transaction
+	collection := r.db.Collection("MailApp")
+
+	log.Println("[DEBUG] Searching transaction with connote:", connote)
+
+	// Handle kemungkinan perbedaan nama field di MongoDB
+	filter := bson.M{
+		"$or": []bson.M{
+			{"consignment_note": connote},
+			{"ConsigmentNote": connote}, // fallback jika field lama masih pakai typo
+		},
+	}
+
+	err := collection.FindOne(ctx, filter).Decode(&tr)
+	if err != nil {
+		log.Println("[ERROR] Transaction not found for connote:", connote, "| Error:", err)
+		return model.Transaction{}, fmt.Errorf("transaction not found: %w", err)
+	}
+
+	log.Println("[INFO] Transaction found:", tr.ConsigmentNote)
+	return tr, nil
+}
+
 //Generate Consignment Note
 func (r *MTrans) GenerateConnote() string {
-	// Format: P + tanggal (ddMMyy) + 6 random digit
-	datePart := time.Now().Format("020106") // contoh: 250721
-	randomPart := primitive.NewObjectID().Hex()[len(primitive.NewObjectID().Hex())-6:]
+	// Format tanggal: ddMMyy (contoh: 201025)
+	datePart := time.Now().Format("020106")
+
+	// Buat 6 digit angka acak
+	randomPart := fmt.Sprintf("%06d", time.Now().UnixNano()%1000000)
+
+	// Gabungkan jadi format akhir: P2507210080398
 	return fmt.Sprintf("P%s%s", datePart, randomPart)
 }
 

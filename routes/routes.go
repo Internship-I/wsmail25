@@ -25,10 +25,10 @@ func UserRoutes(grp fiber.Router) (err error) {
 	grp.Get("/", GetHome)
 	groupes := grp.Group("/user")
 
-	// groupes.Post("/insertUs", users.InsertUser)
 	groupes.Get("/getallusers", users.GetAllUsers)
 	groupes.Post("/inserttrans", trans.InsertTransaction)
 	groupes.Get("/getalltransactions", trans.GetAllTransaction)
+	groupes.Get("/getbyconnote/:connote", trans.GetByConnote)
 
 	return
 }
