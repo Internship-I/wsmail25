@@ -3,11 +3,14 @@ package controller
 import "github.com/gofiber/fiber/v2"
 
 type UserController interface {
-	InsertUser(ctx *fiber.Ctx) (err error)
-	GetAllUsers(ctx *fiber.Ctx) (err error)
+	// InsertUser(ctx *fiber.Ctx) (err error)
+	GetAllUsers(c *fiber.Ctx) error
+	GetAllTransaction(ctx *fiber.Ctx) (err error)
+	InsertTransaction(c *fiber.Ctx) error
 }
 
 type TransactionController interface {
-	InsertTransaction(ctx *fiber.Ctx) (err error)
+	// InsertTransaction(ctx *fiber.Ctx) (err error)
 	GetAllTransaction(ctx *fiber.Ctx) (err error)
+	InsertTransaction(c *fiber.Ctx) error
 }

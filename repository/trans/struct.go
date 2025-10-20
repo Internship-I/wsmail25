@@ -1,13 +1,13 @@
-package users
+package trans
 
 import "go.mongodb.org/mongo-driver/mongo"
 
-func NewPenggunaTable(db *mongo.Client) *MUsers {
-	return &MUsers{
+func NewTransaksiTable(db *mongo.Client) *MTrans {
+	return &MTrans{
 		db: db.Database("Internship1"),
 	}
 }
 
-type MUsers struct {
+type MTrans struct {
 	db *mongo.Database
 }

@@ -2,7 +2,7 @@ package config
 
 import "os"
 
-var URIMONGODBWSMAIL = os.Getenv("MONGOINTERN")
+var URIMONGODBWSMAIL = "mongodb+srv://nidasakinaaulia:Nida150304@internship1.9oeyawk.mongodb.net/"
 var DBNAME = "Internship1"
 var PublicKey = os.Getenv("PUBLICKEY")
 var PrivateKey = os.Getenv("PRIVATEKEY")

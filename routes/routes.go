@@ -1,8 +1,8 @@
 package routes
 
 import (
-	users_controller "wsmail25/controller/users-controller"
 	transaction_controller "wsmail25/controller/transaction-controller"
+	users_controller "wsmail25/controller/users-controller"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -24,11 +24,38 @@ func UserRoutes(grp fiber.Router) (err error) {
 
 	grp.Get("/", GetHome)
 	groupes := grp.Group("/user")
-	// matkul
-	groupes.Post("/insertUs", users.InsertUser)
-	groupes.Get("/User", users.GetAllUsers)
-	groupes.Post("/insertTrans", trans.InsertTransaction)
-	groupes.Get("/transaction", trans.GetAllTransaction)
+
+	// groupes.Post("/insertUs", users.InsertUser)
+	groupes.Get("/getallusers", users.GetAllUsers)
+	groupes.Post("/inserttrans", trans.InsertTransaction)
+	groupes.Get("/getalltransactions", trans.GetAllTransaction)
 
 	return
 }
+
+// func TransactionRoutes(grp fiber.Router) (err error) {
+// 	trans := transaction_controller.NewTransController(TransactionRepository)
+
+// 	grp.Get("/", GetHome)
+// 	groupes := grp.Group("/transaction")
+
+// 	groupes.Post("/inserttrans", trans.InsertTransaction)
+// 	groupes.Get("/getalltransactions", trans.GetAllTransaction)
+// 	return
+// }
+
+// func UserRoutes(grp fiber.Router) (err error) {
+// 	users := users_controller.NewUserController(UsersRepository)
+// 	trans := transaction_controller.NewTransController(TransactionRepository)
+
+// 	userGroup := grp.Group("/user")
+// 	transGroup := grp.Group("/transaction")
+
+// 	userGroup.Post("/insert", users.InsertUser)
+// 	userGroup.Get("/list", users.GetAllUsers)
+
+// 	transGroup.Post("/insert", trans.InsertTransaction)
+// 	transGroup.Get("/list", trans.GetAllTransaction)
+
+// 	return
+// }

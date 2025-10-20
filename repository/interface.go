@@ -1,13 +1,19 @@
 package repository
 
-import "wsmail25/model"
+import (
+	"context"
+	"wsmail25/model"
+)
 
 type UsersRepository interface {
-	InsertUser(users model.Users) (err error)
-	GetAllUsers() (users model.Users, err error)
+	GetAllUsers(ctx context.Context) ([]model.Users, error)
+	InsertUser	(ctx context.Context, user model.Users) (model.Users, error)
+	GetAllTransaction(ctx context.Context) ([]model.Transaction, error)
+	InsertTransaction(ctx context.Context, trans model.Transaction) (model.Transaction, error)
+	
 }
 
-type TransactionRepository interface{
-	InsertTransaction(transaction model.Transaction) (err error)
-	GetAllTransaction() (transaction model.Transaction, err error)
+type TransactionRepository interface {
+	GetAllTransaction(ctx context.Context) ([]model.Transaction, error)
+	InsertTransaction(ctx context.Context, trans model.Transaction) (model.Transaction, error)
 }
