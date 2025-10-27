@@ -40,9 +40,8 @@ func (u *MUsers) GetAllUsers(ctx context.Context) ([]model.Users, error){
 func (u *MUsers) InsertUser	(ctx context.Context, user model.Users) (model.Users, error){
 	collection := u.db.Collection("User")
 	userData := bson.M{
-		"fullname": user.FullName,
-		"phone_number": user.PhoneNumber,
 		"username": user.Username,
+		"phone_number": user.PhoneNumber,
 		"password": user.Password,
 		"role":		user.Role,
 		"created_at": time.Now(),

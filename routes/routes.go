@@ -29,7 +29,10 @@ func UserRoutes(grp fiber.Router) (err error) {
 	groupes.Post("/inserttrans", trans.InsertTransaction)
 	groupes.Get("/getalltransactions", trans.GetAllTransaction)
 	groupes.Get("/getbyconnote/:connote", trans.GetByConnote)
-
+	groupes.Get("/getbydeliverystatus/:status", trans.GetByDeliveryStatus)
+	groupes.Post("/sendWAOnDelivery", trans.SendWAOnDelivery)
+	groupes.Post("/sendWADelivered", trans.SendWADelivered)	
+	// groupes.Put("/updateTrans/:connote", trans.UpdateDeliveryStatus)
 	return
 }
 
