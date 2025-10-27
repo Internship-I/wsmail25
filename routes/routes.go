@@ -27,12 +27,17 @@ func UserRoutes(grp fiber.Router) (err error) {
 
 	groupes.Get("/getallusers", users.GetAllUsers)
 	groupes.Post("/inserttrans", trans.InsertTransaction)
+	// Ambil semua transaksi
 	groupes.Get("/getalltransactions", trans.GetAllTransaction)
+	// Ambil berdasarkan connote
 	groupes.Get("/getbyconnote/:connote", trans.GetByConnote)
 	groupes.Get("/getbydeliverystatus/:status", trans.GetByDeliveryStatus)
+	// Update status pengiriman (PUT /api/transactions/:connote/status)
+	groupes.Put("/:connote/status", trans.UpdateDeliveryStatus)
 	groupes.Post("/sendWAOnDelivery", trans.SendWAOnDelivery)
 	groupes.Post("/sendWADelivered", trans.SendWADelivered)	
 	// groupes.Put("/updateTrans/:connote", trans.UpdateDeliveryStatus)
+	groupes.Delete("/deleteTransaction/:id", trans.DeleteTransaction)
 	return
 }
 

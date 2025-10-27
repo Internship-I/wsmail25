@@ -12,6 +12,7 @@ type UserController interface {
 	UpdateDeliveryStatus(c *fiber.Ctx) error
 	SendWAOnDelivery(c *fiber.Ctx) error
 	SendWADelivered(c *fiber.Ctx) error
+	DeleteTransaction(c *fiber.Ctx) error
 }
 
 // type TransactionController interface {

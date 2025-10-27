@@ -16,6 +16,7 @@ type UsersRepository interface {
 	UpdateDeliveryStatus(ctx context.Context, id primitive.ObjectID, status string) (model.Transaction, error)	
 	SendWAOnDelivery(ctx context.Context, transactionID primitive.ObjectID) (model.Transaction, error)
 	SendWADelivered(ctx context.Context, transactionID primitive.ObjectID) (model.Transaction, error)
+	DeleteTransaction(ctx context.Context, id string) (model.Transaction, error)
 }
 
 type TransactionRepository interface {
@@ -24,4 +25,5 @@ type TransactionRepository interface {
 	GetByConnote(ctx context.Context, connote string) (model.Transaction, error)
 	GetByDeliveryStatus(ctx context.Context, status string) ([]model.Transaction, error)
 	// UpdateDeliveryStatus(ctx context.Context, connote string, status string) (model.Transaction, error)
+	DeleteTransaction(ctx context.Context, id string) (model.Transaction, error)
 }

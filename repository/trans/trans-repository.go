@@ -5,10 +5,12 @@ import (
 	"fmt"
 	"log"
 	"time"
+	"errors"
 	"wsmail25/model"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
@@ -231,4 +233,27 @@ func (r *MTrans) SendWADelivered(ctx context.Context, transactionID primitive.Ob
 
 	log.Printf("[WA] Notifikasi paket tiba dikirim untuk transaksi %s\n", trx.ConsignmentNote)
 	return updated, nil
+}
+
+func (r *MTrans) DeleteTransaction(ctx context.Context, id string) (model.Transaction, error) {
+	objectID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return model.Transaction{}, fmt.Errorf("id tidak valid: %w", err)
+	}
+
+	filter := bson.M{"_id": objectID}
+	log.Println("[INFO] Menghapus transaksi dengan filter:", filter)
+
+	var deleted model.Transaction
+	col := r.db.Collection("MailApp")
+	err = col.FindOneAndDelete(ctx, filter).Decode(&deleted)
+	if err != nil {
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			return model.Transaction{}, fmt.Errorf("transaksi dengan id %s tidak ditemukan", id)
+		}
+		return model.Transaction{}, fmt.Errorf("gagal menghapus transaksi: %w", err)
+	}
+
+	log.Printf("[INFO] Transaksi berhasil dihapus: %+v\n", deleted)
+	return deleted, nil
 }

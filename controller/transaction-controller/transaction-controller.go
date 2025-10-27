@@ -2,6 +2,7 @@ package transaction_controller
 
 import (
 	"fmt"
+	"log"
 	"time"
 	"wsmail25/model"
 
@@ -172,5 +173,26 @@ func (h *TransactionHandler) SendWADelivered(c *fiber.Ctx) error {
 		"status":  "error",
 		"message": "Repository belum mengimplementasikan metode SendWADelivered; tambahkan metode pada repository untuk melakukan pengiriman WA dan update status",
 		"payload": map[string]interface{}{"id": payload.ID},
+	})
+}
+
+// ✅ Delete Transaction by ID
+func (r *TransactionHandler) DeleteTransaction(c *fiber.Ctx) error {
+	id := c.Params("id")
+
+	deleted, err := r.transaction.DeleteTransaction(c.Context(), id)
+	if err != nil {
+		log.Printf("[ERROR] gagal menghapus transaksi: %v", err)
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"status":  "error",
+			"message": fmt.Sprintf("Transaksi dengan ID %s tidak ditemukan", id),
+			"error":   err.Error(),
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"status":  "success",
+		"message": fmt.Sprintf("Transaksi dengan ID %s berhasil dihapus", id),
+		"data":    deleted,
 	})
 }
