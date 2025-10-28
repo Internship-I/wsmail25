@@ -3,7 +3,6 @@ package repository
 import (
 	"context"
 	"wsmail25/model"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type UsersRepository interface {
@@ -13,9 +12,7 @@ type UsersRepository interface {
 	GetByDeliveryStatus(ctx context.Context, status string) ([]model.Transaction, error)
 	InsertTransaction(ctx context.Context, trans model.Transaction) (model.Transaction, error)
 	GetByConnote(ctx context.Context, connote string) (model.Transaction, error)
-	UpdateDeliveryStatus(ctx context.Context, id primitive.ObjectID, status string) (model.Transaction, error)	
-	SendWAOnDelivery(ctx context.Context, transactionID primitive.ObjectID) (model.Transaction, error)
-	SendWADelivered(ctx context.Context, transactionID primitive.ObjectID) (model.Transaction, error)
+	UpdateDeliveryStatus(ctx context.Context, id string, status string, reason string) error
 	DeleteTransaction(ctx context.Context, id string) (model.Transaction, error)
 }
 
@@ -24,6 +21,6 @@ type TransactionRepository interface {
 	InsertTransaction(ctx context.Context, trans model.Transaction) (model.Transaction, error)
 	GetByConnote(ctx context.Context, connote string) (model.Transaction, error)
 	GetByDeliveryStatus(ctx context.Context, status string) ([]model.Transaction, error)
-	// UpdateDeliveryStatus(ctx context.Context, connote string, status string) (model.Transaction, error)
+	UpdateDeliveryStatus(ctx context.Context, id string, status string, reason string) error
 	DeleteTransaction(ctx context.Context, id string) (model.Transaction, error)
 }

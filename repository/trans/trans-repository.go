@@ -11,7 +11,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func (r *MTrans) GetAllTransaction(ctx context.Context) ([]model.Transaction, error) {
@@ -128,6 +127,7 @@ func (r *MTrans) InsertTransaction(ctx context.Context, trans model.Transaction)
 		"wa_delivered_sent_at":   nil,
 		// Delivery status
 		"delivery_status": trans.DeliveryStatus,
+		"failure_reason": trans.FailureReason,
 		// Timestamps
 		"created_at": now,
 		"updated_at": now,
@@ -149,90 +149,40 @@ func (r *MTrans) InsertTransaction(ctx context.Context, trans model.Transaction)
 	return trans, nil
 }
 
-// UpdateDeliveryStatus by ObjectID
-func (r *MTrans) UpdateDeliveryStatus(ctx context.Context, id primitive.ObjectID, status string) (model.Transaction, error) {
-	col := r.db.Collection("MailApp")
-
-	filter := bson.M{"_id": id}
-	update := bson.M{
-		"$set": bson.M{
-			"delivery_status": status,
-			"updated_at":      time.Now(),
-		},
-	}
-	opts := options.FindOneAndUpdate().SetReturnDocument(options.After)
-
-	var updated model.Transaction
-	if err := col.FindOneAndUpdate(ctx, filter, update, opts).Decode(&updated); err != nil {
-		return model.Transaction{}, fmt.Errorf("gagal memperbarui status pengiriman: %w", err)
-	}
-	return updated, nil
-}
-
-// SendWAOnDelivery
-func (r *MTrans) SendWAOnDelivery(ctx context.Context, transactionID primitive.ObjectID) (model.Transaction, error) {
-	col := r.db.Collection("MailApp")
-
-	var trx model.Transaction
-	if err := col.FindOne(ctx, bson.M{"_id": transactionID}).Decode(&trx); err != nil {
-		return model.Transaction{}, fmt.Errorf("transaksi tidak ditemukan: %w", err)
+// ✅ UpdateDeliveryStatusAndSendWA
+func (m *MTrans) UpdateDeliveryStatus(ctx context.Context, id string, status string, reason string) error {
+	objectID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return errors.New("ID transaksi tidak valid")
 	}
 
-	if trx.WAOnDeliverySent {
-		return model.Transaction{}, fmt.Errorf("pesan WA 'on delivery' sudah pernah dikirim")
+	updateData := bson.M{
+		"delivery_status": status,
+		"updated_at":      time.Now(),
 	}
 
-	now := time.Now()
-	update := bson.M{
-		"$set": bson.M{
-			"wa_on_delivery_sent":    true,
-			"wa_on_delivery_sent_at": now,
-			"delivery_status":        "on_delivery",
-			"updated_at":             now,
-		},
-	}
-	opts := options.FindOneAndUpdate().SetReturnDocument(options.After)
-
-	var updated model.Transaction
-	if err := col.FindOneAndUpdate(ctx, bson.M{"_id": transactionID}, update, opts).Decode(&updated); err != nil {
-		return model.Transaction{}, fmt.Errorf("gagal update transaksi: %w", err)
+	if status == "Failed" && reason != "" {
+		updateData["failure_reason"] = reason
+	} else {
+		updateData["failure_reason"] = nil
 	}
 
-	log.Printf("[WA] Notifikasi pengiriman dikirim untuk transaksi %s\n", trx.ConsignmentNote)
-	return updated, nil
-}
+	filter := bson.M{"_id": objectID}
 
-// SendWADelivered
-func (r *MTrans) SendWADelivered(ctx context.Context, transactionID primitive.ObjectID) (model.Transaction, error) {
-	col := r.db.Collection("MailApp")
-
-	var trx model.Transaction
-	if err := col.FindOne(ctx, bson.M{"_id": transactionID}).Decode(&trx); err != nil {
-		return model.Transaction{}, fmt.Errorf("transaksi tidak ditemukan: %w", err)
+	// Use the repository's database handle to get the collection
+	col := m.db.Collection("MailApp")
+	result, err := col.UpdateOne(ctx, filter, bson.M{"$set": updateData})
+	if err != nil {
+		log.Println("[ERROR] gagal update status:", err)
+		return err
 	}
 
-	if trx.WADeliveredSent {
-		return model.Transaction{}, fmt.Errorf("pesan WA 'delivered' sudah pernah dikirim")
+	if result.MatchedCount == 0 {
+		return errors.New("transaksi tidak ditemukan")
 	}
 
-	now := time.Now()
-	update := bson.M{
-		"$set": bson.M{
-			"wa_delivered_sent":    true,
-			"wa_delivered_sent_at": now,
-			"delivery_status":      "delivered",
-			"updated_at":           now,
-		},
-	}
-	opts := options.FindOneAndUpdate().SetReturnDocument(options.After)
-
-	var updated model.Transaction
-	if err := col.FindOneAndUpdate(ctx, bson.M{"_id": transactionID}, update, opts).Decode(&updated); err != nil {
-		return model.Transaction{}, fmt.Errorf("gagal update transaksi: %w", err)
-	}
-
-	log.Printf("[WA] Notifikasi paket tiba dikirim untuk transaksi %s\n", trx.ConsignmentNote)
-	return updated, nil
+	log.Println("[INFO] status pengiriman diperbarui:", status)
+	return nil
 }
 
 func (r *MTrans) DeleteTransaction(ctx context.Context, id string) (model.Transaction, error) {

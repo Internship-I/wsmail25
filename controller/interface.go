@@ -9,10 +9,8 @@ type UserController interface {
 	InsertTransaction(c *fiber.Ctx) error
 	GetByConnote(c *fiber.Ctx) error
 	GetByDeliveryStatus(c *fiber.Ctx) error	
-	UpdateDeliveryStatus(c *fiber.Ctx) error
-	SendWAOnDelivery(c *fiber.Ctx) error
-	SendWADelivered(c *fiber.Ctx) error
 	DeleteTransaction(c *fiber.Ctx) error
+	UpdateDeliveryStatus(c *fiber.Ctx) error
 }
 
 // type TransactionController interface {

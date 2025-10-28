@@ -32,7 +32,8 @@ type Transaction struct {
 	WADeliveredSent   bool      		`bson:"wa_delivered_sent" json:"wa_delivered_sent"` // default false
 	WADeliveredSentAt *time.Time 		`bson:"wa_delivered_sent_at,omitempty" json:"wa_delivered_sent_at,omitempty"`
 	// Delivery Status
-    DeliveryStatus  string             `bson:"delivery_status" json:"delivery_status"`
+    DeliveryStatus  string             `bson:"delivery_status,omitempty" json:"delivery_status,omitempty"`
+	FailureReason   string             `bson:"failure_reason,omitempty" json:"failure_reason,omitempty"`
 	// Timestamps
 	CreatedAt       time.Time          `bson:"created_at" json:"created_at"`
 	UpdatedAt       time.Time          `bson:"updated_at" json:"updated_at"`
